@@ -71,37 +71,50 @@ class ToolsScreenState extends State<ToolsScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Column(children: [
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Container(
+                          padding: EdgeInsets.only(bottom: 6),
+                          child: Text(
+                            "Название города",
+                            style: TextStyle(color: AppColors.hintColor, fontSize: 14),
+                          ),
+                        ),
                         AppTextField(
-                            hint: "Название города",
+                            hint: "",
                             onChanged: (value) {
                               _weatherLocation = value;
                             }),
-                        TextButton(
-                          onPressed: () async {
-                            SharedPreferences shared =
-                                await SharedPreferences.getInstance();
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () async {
+                                if (_weatherLocation.trim().isNotEmpty) {
+                                  SharedPreferences shared = await SharedPreferences.getInstance();
 
-                            List<String> wList = [];
+                                  List<String> wList = [];
 
-                            if (shared.getString("weatherList") != null) {
-                              wList.addAll(List<String>.from(jsonDecode(
-                                  shared.getString("weatherList")!)));
-                            }
+                                  if (shared.getString("weatherList") != null) {
+                                    wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
+                                  }
 
-                            if (!wList.contains(_weatherLocation)) {
-                              wList.add(_weatherLocation);
-                            }
+                                  if (!wList.contains(_weatherLocation)) {
+                                    wList.add(_weatherLocation);
+                                  }
 
-                            shared.setString("weatherList", jsonEncode(wList));
+                                  shared.setString("weatherList", jsonEncode(wList));
 
-                            _weatherFuture = viewModel.getWeatherList();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            child: Text("Добавить"),
-                          ),
+                                  _weatherFuture = viewModel.getWeatherList();
+
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                child: Text("Добавить"),
+                              ),
+                            ),
+                          ],
                         ),
                       ]),
                     ),
@@ -145,6 +158,59 @@ class ToolsScreenState extends State<ToolsScreen> {
                           itemBuilder: (itemBuilder, index) {
                             return AppWeatherCard(
                               item: viewModel.weatherList[index],
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (builder) {
+                                    return Wrap(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Container(
+                                              child: Text(
+                                                "Удалить выбранный город из списка?",
+                                                style: TextStyle(color: AppColors.hintColor, fontSize: 14),
+                                              ),
+                                            ),
+                                            Row(
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                    child: Text("Отменить"),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () async {
+                                                    SharedPreferences shared = await SharedPreferences.getInstance();
+
+                                                    List<String> wList = [];
+
+                                                    if (shared.getString("weatherList") != null) {
+                                                      wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
+                                                    }
+
+                                                    _weatherFuture = viewModel.getWeatherList();
+
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                    child: Text("Удалить"),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
                             );
                           },
                         ),

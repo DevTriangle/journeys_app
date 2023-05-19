@@ -12,18 +12,24 @@ class HomeViewModel extends ChangeNotifier {
   Future<WeatherItem> getCurrentWeather(String location) async {
     WeatherItem weatherItem;
 
-    http.Response response = await http.get(Uri.parse(
-        "https://nominatim.openstreetmap.org/search?q=${location.replaceAll('&', '')}&format=json"));
+    try {
+      http.Response response = await http.get(Uri.parse(
+          "https://nominatim.openstreetmap.org/search?q=${location.replaceAll('&', '')}&format=json"));
 
-    http.Response wResponse = await http.get(Uri.parse(
-        "https://api.open-meteo.com/v1/forecast?latitude=${double.parse(jsonDecode(response.body)[0]["lat"])}&longitude=${double.parse(jsonDecode(response.body)[0]["lon"])}&current_weather=true"));
+      http.Response wResponse = await http.get(Uri.parse(
+          "https://api.open-meteo.com/v1/forecast?latitude=${double.parse(jsonDecode(response.body)[0]["lat"])}&longitude=${double.parse(jsonDecode(response.body)[0]["lon"])}&current_weather=true"));
 
-    weatherItem = WeatherItem(
-      location,
-      jsonDecode(wResponse.body)["current_weather"]["temperature"],
-    );
+      weatherItem = WeatherItem(
+        location,
+        jsonDecode(wResponse.body)["current_weather"]["temperature"],
+      );
 
-    return weatherItem;
+      return weatherItem;
+    } catch (e) {
+      print(e);
+
+      return WeatherItem(location, 0);
+    }
   }
 
   Future<List<WeatherItem>> getWeatherList() async {
