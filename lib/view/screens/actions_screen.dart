@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:journeys_app/view/shapes.dart';
 import 'package:journeys_app/view/widgets/app_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/app_action.dart';
 import '../colors.dart';
@@ -10,7 +14,9 @@ class ActionsScreen extends StatefulWidget {
 }
 
 class ActionsScreenState extends State<ActionsScreen> {
-  final List<AppAction> actions = [
+  late Future<List<AppAction>> _loadActions;
+
+  final List<AppAction> _actions = [
     AppAction("Плавание", Icons.pool_rounded),
     AppAction("Повседневно-деловые Принадлежности", Icons.cases_rounded),
     AppAction("Официально-деловые Принадлежности", Icons.business_center_rounded),
@@ -21,7 +27,31 @@ class ActionsScreenState extends State<ActionsScreen> {
     AppAction("Уход за детьми", Icons.child_friendly_rounded),
     AppAction("Пляж", Icons.wb_sunny_rounded),
   ];
+
+  final List<AppAction> _userActions = [];
+
   List<AppAction> _selectedActions = [];
+
+  Future<List<AppAction>> _getActions() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    if (sharedPreferences.getString("userActions") != null) {
+      List<String> ac = List.from(jsonDecode(sharedPreferences.getString("userActions").toString()));
+
+      for (var a in ac) {
+        _userActions.add(AppAction(a, Icons.settings_rounded));
+      }
+    }
+
+    return _userActions;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadActions = _getActions();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +87,14 @@ class ActionsScreenState extends State<ActionsScreen> {
             child: Column(
               children: [
                 GridView.builder(
-                  itemCount: actions.length,
+                  itemCount: _actions.length,
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1 / 1.7),
                   itemBuilder: (context, index) {
                     return ActionCard(
-                      action: actions[index],
-                      selected: _selectedActions.contains(actions[index]),
+                      action: _actions[index],
+                      selected: _selectedActions.contains(_actions[index]),
                       onSelect: (action) {
                         if (_selectedActions.contains(action)) {
                           _selectedActions.remove(action);
@@ -89,33 +119,69 @@ class ActionsScreenState extends State<ActionsScreen> {
                     ],
                   ),
                 ),
-                GridView.builder(
-                  itemCount: actions.length,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1 / 1.7),
-                  itemBuilder: (context, index) {
-                    return ActionCard(
-                      action: actions[index],
-                      selected: _selectedActions.contains(actions[index]),
-                      onSelect: (action) {
-                        if (_selectedActions.contains(action)) {
-                          _selectedActions.remove(action);
-                        } else {
-                          _selectedActions.add(action);
-                        }
+                FutureBuilder(
+                  future: _loadActions,
+                  builder: (b, snapshot) {
+                    if (snapshot.hasData && _userActions.isNotEmpty) {
+                      return GridView.builder(
+                        itemCount: _userActions.length,
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1 / 1.7),
+                        itemBuilder: (context, index) {
+                          return ActionCard(
+                            action: _userActions[index],
+                            selected: _selectedActions.contains(_userActions[index]),
+                            onSelect: (action) {
+                              if (_selectedActions.contains(action)) {
+                                _selectedActions.remove(action);
+                              } else {
+                                _selectedActions.add(action);
+                              }
 
-                        setState(() {});
-                      },
-                    );
+                              setState(() {});
+                            },
+                          );
+                        },
+                      );
+                    } else {
+                      return SizedBox();
+                    }
                   },
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Card(
+                        elevation: 1,
+                        margin: EdgeInsets.zero,
+                        shape: AppShapes.smallRoundedRectangleShape,
+                        color: Theme.of(context).primaryColor,
+                        child: InkWell(
+                          onTap: () {},
+                          child: Padding(
+                            padding: const EdgeInsets.all(14.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Добавить пользовательское событие",
+                                  style: TextStyle(color: Colors.white, fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),
           ),
         ),
         bottomNavigationBar: Container(
-          height: 100,
+          height: 51,
           child: Column(
             children: [
               Row(
