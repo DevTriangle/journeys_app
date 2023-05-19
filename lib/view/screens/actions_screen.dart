@@ -51,22 +51,68 @@ class ActionsScreenState extends State<ActionsScreen> {
           ),
           preferredSize: Size.fromHeight(50),
         ),
-        body: GridView.builder(
-          itemCount: actions.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1 / 1.7),
-          itemBuilder: (context, index) {
-            return ActionCard(
-              action: actions[index],
-              selected: _selectedActions.contains(actions[index]),
-              onSelect: (action) {
-                if (_selectedActions.contains(action)) {
-                  _selectedActions.remove(action);
-                } else {
-                  _selectedActions.add(action);
-                }
-              },
-            );
-          },
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                GridView.builder(
+                  itemCount: actions.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1 / 1.7),
+                  itemBuilder: (context, index) {
+                    return ActionCard(
+                      action: actions[index],
+                      selected: _selectedActions.contains(actions[index]),
+                      onSelect: (action) {
+                        if (_selectedActions.contains(action)) {
+                          _selectedActions.remove(action);
+                        } else {
+                          _selectedActions.add(action);
+                        }
+
+                        setState(() {});
+                      },
+                    );
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Пользовательское",
+                        style: TextStyle(fontSize: 16, color: AppColors.hintColor),
+                      ),
+                    ],
+                  ),
+                ),
+                GridView.builder(
+                  itemCount: actions.length,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, childAspectRatio: 1 / 1.7),
+                  itemBuilder: (context, index) {
+                    return ActionCard(
+                      action: actions[index],
+                      selected: _selectedActions.contains(actions[index]),
+                      onSelect: (action) {
+                        if (_selectedActions.contains(action)) {
+                          _selectedActions.remove(action);
+                        } else {
+                          _selectedActions.add(action);
+                        }
+
+                        setState(() {});
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
         bottomNavigationBar: Container(
           height: 100,
@@ -88,7 +134,7 @@ class ActionsScreenState extends State<ActionsScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                "Начать сбор",
+                                "Собрать багаж",
                                 style: TextStyle(color: Colors.white, fontSize: 20),
                               ),
                             ],

@@ -58,9 +58,7 @@ class AppToolCard extends StatelessWidget {
                     ),
                     isExpanded != null
                         ? Icon(
-                            isExpanded == true
-                                ? Icons.arrow_drop_up_rounded
-                                : Icons.arrow_drop_down_rounded,
+                            isExpanded == true ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
                             color: Colors.white,
                           )
                         : SizedBox(),
@@ -169,11 +167,7 @@ class TypeCard extends StatelessWidget {
               ),
               Text(
                 type,
-                style: TextStyle(
-                    fontSize: 18,
-                    color: selected
-                        ? Colors.white
-                        : Theme.of(context).primaryColor),
+                style: TextStyle(fontSize: 18, color: selected ? Colors.white : Theme.of(context).primaryColor),
               ),
             ],
           ),
@@ -206,25 +200,25 @@ class ActionCard extends StatelessWidget {
         onTap: () {
           onSelect(action);
         },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(
-              action.icon,
-              size: 25,
-              color: !selected ? Theme.of(context).primaryColor : Colors.white,
-            ),
-            Text(
-              action.label,
-              style: TextStyle(
-                  fontSize: 14,
-                  color: !selected
-                      ? Theme.of(context).primaryColor
-                      : Colors.white),
-              textAlign: TextAlign.center,
-            )
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                action.icon,
+                size: 50,
+                color: !selected ? Theme.of(context).primaryColor : Colors.white,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                action.label,
+                style: TextStyle(fontSize: 15, color: !selected ? Theme.of(context).primaryColor : Colors.white),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
         ),
       ),
     );
