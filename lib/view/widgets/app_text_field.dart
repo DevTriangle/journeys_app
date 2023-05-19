@@ -22,28 +22,29 @@ class AppTextField extends StatefulWidget {
   final TextEditingController? controller;
   final List<TextInputFormatter>? inputFormatter;
   final TextCapitalization textCapitalization;
+  final TextAlign? textAlign;
 
-  const AppTextField({
-    super.key,
-    required this.hint,
-    required this.onChanged,
-    this.inputType = TextInputType.text,
-    this.obscureText = false,
-    this.margin = const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
-    this.icon,
-    this.onIconPressed,
-    this.errorText,
-    this.maxLines = 1,
-    this.minLines = 1,
-    this.maxLength,
-    this.validator,
-    this.textInputAction = TextInputAction.next,
-    this.readOnly = false,
-    this.controller,
-    this.inputFormatter,
-    this.textCapitalization = TextCapitalization.sentences,
-    this.onTap,
-  });
+  const AppTextField(
+      {super.key,
+      required this.hint,
+      required this.onChanged,
+      this.inputType = TextInputType.text,
+      this.obscureText = false,
+      this.margin = const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+      this.icon,
+      this.onIconPressed,
+      this.errorText,
+      this.maxLines = 1,
+      this.minLines = 1,
+      this.maxLength,
+      this.validator,
+      this.textInputAction = TextInputAction.next,
+      this.readOnly = false,
+      this.controller,
+      this.inputFormatter,
+      this.textCapitalization = TextCapitalization.sentences,
+      this.onTap,
+      this.textAlign});
 
   @override
   State<StatefulWidget> createState() => _AppTextFieldState();
@@ -65,7 +66,8 @@ class _AppTextFieldState extends State<AppTextField> {
               textCapitalization: widget.textCapitalization,
               inputFormatters: widget.inputFormatter,
               readOnly: widget.readOnly,
-              style: TextStyle(color: Theme.of(context).hintColor),
+              style: TextStyle(color: Colors.black),
+              textAlign: widget.textAlign ?? TextAlign.start,
               textInputAction: widget.textInputAction,
               obscureText: widget.obscureText,
               onChanged: (text) {

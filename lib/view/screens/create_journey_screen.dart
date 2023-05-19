@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:journeys_app/view/colors.dart';
+import 'package:journeys_app/view/screens/actions_screen.dart';
+import 'package:journeys_app/view/widgets/app_card.dart';
 import 'package:journeys_app/view/widgets/app_dropdowm.dart';
 import 'package:journeys_app/view/widgets/app_text_field.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class CreateJourneyScreen extends StatefulWidget {
   @override
@@ -11,6 +14,93 @@ class CreateJourneyScreen extends StatefulWidget {
 class CreateJourneyScreenState extends State<CreateJourneyScreen> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _monthContorller = TextEditingController();
+
+  double _daysCount = 1;
+  String _selectedType = "Деловая";
+  DateTime _selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context, initialDate: DateTime.now(), firstDate: DateTime.now(), lastDate: DateTime.now().add(const Duration(days: 99999)));
+    if (picked != null) {
+      String month = picked.month.toString();
+      String day = picked.day.toString();
+
+      if (picked.month < 10) month = "0$month";
+      if (picked.day < 10) day = "0$day";
+
+      setState(() {
+        _selectedDate = picked;
+        _dateController.text = "$day";
+
+        String m = "";
+
+        switch (picked.month) {
+          case 1:
+            {
+              m = "Января";
+            }
+            break;
+          case 2:
+            {
+              m = "Февраля";
+            }
+            break;
+          case 3:
+            {
+              m = "Марта";
+            }
+            break;
+          case 4:
+            {
+              m = "Апреля";
+            }
+            break;
+          case 5:
+            {
+              m = "Мая";
+            }
+            break;
+          case 6:
+            {
+              m = "Июня";
+            }
+            break;
+          case 7:
+            {
+              m = "Июля";
+            }
+            break;
+          case 8:
+            {
+              m = "Августа";
+            }
+            break;
+          case 9:
+            {
+              m = "Сентября";
+            }
+            break;
+          case 10:
+            {
+              m = "Октября";
+            }
+            break;
+          case 11:
+            {
+              m = "Ноября";
+            }
+            break;
+          case 12:
+            {
+              m = "Декабря";
+            }
+            break;
+        }
+        _monthContorller.text = "$m";
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,85 +130,164 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
           ),
           preferredSize: Size.fromHeight(50),
         ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                "Куда",
-                style: TextStyle(color: AppColors.hintColor, fontSize: 16),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Text(
+                  "Куда",
+                  style: TextStyle(color: AppColors.hintColor, fontSize: 16),
+                ),
               ),
-            ),
-            AppTextField(
-              hint: "",
-              onChanged: (text) {},
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                "Дата поездки",
-                style: TextStyle(color: AppColors.hintColor, fontSize: 16),
+              AppTextField(
+                hint: "",
+                onChanged: (text) {},
               ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: AppTextField(
-                    hint: "",
-                    controller: _dateController,
-                    onChanged: (text) {},
-                    onTap: () {},
-                    readOnly: true,
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Text(
+                  "Дата поездки",
+                  style: TextStyle(color: AppColors.hintColor, fontSize: 16),
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: AppTextField(
+                      hint: "",
+                      controller: _dateController,
+                      textAlign: TextAlign.center,
+                      onChanged: (text) {},
+                      onTap: () {
+                        _selectDate(context);
+                      },
+                      readOnly: true,
+                    ),
                   ),
-                ),
-                Container(
-                  color: AppColors.hintColor,
-                  width: 1.5,
-                  height: 0,
-                ),
-                Expanded(
-                  flex: 10,
-                  child: AppTextField(
-                    hint: "",
-                    onChanged: (text) {},
-                    controller: _monthContorller,
-                    onTap: () {},
-                    icon: Icons.arrow_drop_down_circle_outlined,
-                    readOnly: true,
+                  Container(
+                    color: AppColors.hintColor,
+                    width: 1.5,
+                    height: 0,
                   ),
+                  Expanded(
+                    flex: 10,
+                    child: AppTextField(
+                      hint: "",
+                      onChanged: (text) {},
+                      controller: _monthContorller,
+                      onTap: () {
+                        _selectDate(context);
+                      },
+                      icon: Icons.arrow_drop_down_circle_outlined,
+                      readOnly: true,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Text(
+                  "Длительность пребывания",
+                  style: TextStyle(color: AppColors.hintColor, fontSize: 16),
                 ),
-              ],
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                "Длительность пребывания",
-                style: TextStyle(color: AppColors.hintColor, fontSize: 16),
               ),
-            ),
-            // Slider
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Text(
-                "Тип поездки",
-                style: TextStyle(color: AppColors.hintColor, fontSize: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: SfSlider(
+                      min: 1,
+                      max: 30,
+                      interval: 1,
+                      stepSize: 1,
+                      value: _daysCount,
+                      onChanged: (value) {
+                        _daysCount = value;
+                        setState(() {});
+                      },
+                      activeColor: Theme.of(context).primaryColor,
+                      showDividers: true,
+                      showLabels: true,
+                      labelFormatterCallback: (actualValue, formattedText) {
+                        return actualValue == _daysCount ? _daysCount.toInt().toString() : "";
+                      },
+                      thumbIcon: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.mode_night_rounded,
+                            color: Colors.white,
+                            size: 13,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            InkWell(
-              child: Card(
-                elevation: 0,
-                margin: EdgeInsets.zero,
-                color: AppColors.secondaryColor,
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Text(
+                  "Тип поездки",
+                  style: TextStyle(color: AppColors.hintColor, fontSize: 16),
+                ),
+              ),
+              SizedBox(
+                height: 300,
                 child: Row(
                   children: [
-                    Text("Выбрать действия"),
+                    Expanded(
+                      child: TypeCard(
+                        icon: Icons.cases_rounded,
+                        onTap: () {
+                          _selectedType = "Деловая";
+                          setState(() {});
+                        },
+                        selected: _selectedType == "Деловая",
+                        type: "Деловая",
+                      ),
+                    ),
+                    Expanded(
+                      child: TypeCard(
+                        icon: Icons.tour_rounded,
+                        onTap: () {
+                          _selectedType = "Туристическая";
+                          setState(() {});
+                        },
+                        selected: _selectedType == "Туристическая",
+                        type: "Туристическая",
+                      ),
+                    ),
                   ],
                 ),
               ),
-            )
-          ],
+              Card(
+                elevation: 0,
+                margin: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                color: AppColors.secondaryColor,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (builder) => ActionsScreen()));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Выбрать действия",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
