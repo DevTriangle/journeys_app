@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:journeys_app/view/colors.dart';
 import 'package:journeys_app/view/screens/create_journey_screen.dart';
 
 void main() {
@@ -14,7 +15,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Journeys App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: AppColors.primaryColor,
+        scaffoldBackgroundColor: AppColors.backgroundColor,
       ),
       home: CreateJourneyScreen(),
     );
