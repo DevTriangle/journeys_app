@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:journeys_app/view/screens/create_journey_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ,
+      home: CreateJourneyScreen(),
     );
   }
 }

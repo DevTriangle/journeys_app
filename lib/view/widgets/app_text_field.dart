@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ksmess/ui/shapes.dart';
+
+import '../shapes.dart';
 
 class AppTextField extends StatefulWidget {
   final String hint;
