@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:journeys_app/view/colors.dart';
 import 'package:journeys_app/view/screens/create_journey_screen.dart';
 import 'package:journeys_app/view/screens/home_screen.dart';
+import 'package:journeys_app/viewmodel/home_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => HomeViewModel()),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
