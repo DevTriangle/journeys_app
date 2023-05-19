@@ -11,6 +11,7 @@ class AppTextField extends StatefulWidget {
   final EdgeInsets margin;
   final IconData? icon;
   final void Function()? onIconPressed;
+  final void Function()? onTap;
   final String? errorText;
   final int maxLines;
   final String? Function(String?)? validator;
@@ -22,25 +23,27 @@ class AppTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatter;
   final TextCapitalization textCapitalization;
 
-  const AppTextField(
-      {super.key,
-      required this.hint,
-      required this.onChanged,
-      this.inputType = TextInputType.text,
-      this.obscureText = false,
-      this.margin = const EdgeInsets.symmetric(horizontal: 20.0, vertical: 3),
-      this.icon,
-      this.onIconPressed,
-      this.errorText,
-      this.maxLines = 1,
-      this.minLines = 1,
-      this.maxLength,
-      this.validator,
-      this.textInputAction = TextInputAction.next,
-      this.readOnly = false,
-      this.controller,
-      this.inputFormatter,
-      this.textCapitalization = TextCapitalization.sentences});
+  const AppTextField({
+    super.key,
+    required this.hint,
+    required this.onChanged,
+    this.inputType = TextInputType.text,
+    this.obscureText = false,
+    this.margin = const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+    this.icon,
+    this.onIconPressed,
+    this.errorText,
+    this.maxLines = 1,
+    this.minLines = 1,
+    this.maxLength,
+    this.validator,
+    this.textInputAction = TextInputAction.next,
+    this.readOnly = false,
+    this.controller,
+    this.inputFormatter,
+    this.textCapitalization = TextCapitalization.sentences,
+    this.onTap,
+  });
 
   @override
   State<StatefulWidget> createState() => _AppTextFieldState();
@@ -57,6 +60,7 @@ class _AppTextFieldState extends State<AppTextField> {
             margin: widget.margin,
             child: TextFormField(
               key: _formKey,
+              onTap: widget.onTap,
               controller: widget.controller,
               textCapitalization: widget.textCapitalization,
               inputFormatters: widget.inputFormatter,
@@ -79,15 +83,15 @@ class _AppTextFieldState extends State<AppTextField> {
                 counterText: "",
                 fillColor: Theme.of(context).cardColor,
                 labelStyle: TextStyle(color: Theme.of(context).hintColor.withOpacity(0.9), fontWeight: FontWeight.w400, fontSize: 14.0),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).cardColor, width: 1.5), borderRadius: AppShapes.borderRadius),
-                errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).errorColor, width: 1.5), borderRadius: AppShapes.borderRadius),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).cardColor, width: 0), borderRadius: BorderRadius.zero),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0), borderRadius: BorderRadius.zero),
                 errorText: widget.errorText,
                 errorStyle: TextStyle(
                   color: Theme.of(context).errorColor,
                   height: 0.9,
                 ),
                 errorMaxLines: 100,
-                border: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1.5), borderRadius: AppShapes.borderRadius),
+                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.white, width: 0), borderRadius: BorderRadius.zero),
                 contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 labelText: widget.hint,
                 suffixIcon: widget.icon != null
