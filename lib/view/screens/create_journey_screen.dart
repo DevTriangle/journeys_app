@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:journeys_app/model/journey.dart';
 import 'package:journeys_app/view/colors.dart';
 import 'package:journeys_app/view/screens/actions_screen.dart';
 import 'package:journeys_app/view/widgets/app_card.dart';
@@ -16,6 +17,7 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
   final TextEditingController _monthContorller = TextEditingController();
 
   double _daysCount = 1;
+  String _destination = "";
   String _selectedType = "Деловая";
   DateTime _selectedDate = DateTime.now();
 
@@ -143,7 +145,9 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
               ),
               AppTextField(
                 hint: "",
-                onChanged: (text) {},
+                onChanged: (text) {
+                  _destination = text;
+                },
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -227,42 +231,7 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
                   ),
                 ],
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Text(
-                  "Тип поездки",
-                  style: TextStyle(color: AppColors.hintColor, fontSize: 16),
-                ),
-              ),
-              SizedBox(
-                height: 300,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TypeCard(
-                        icon: Icons.cases_rounded,
-                        onTap: () {
-                          _selectedType = "Деловая";
-                          setState(() {});
-                        },
-                        selected: _selectedType == "Деловая",
-                        type: "Деловая",
-                      ),
-                    ),
-                    Expanded(
-                      child: TypeCard(
-                        icon: Icons.tour_rounded,
-                        onTap: () {
-                          _selectedType = "Туристическая";
-                          setState(() {});
-                        },
-                        selected: _selectedType == "Туристическая",
-                        type: "Туристическая",
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              SizedBox(height: 16),
               Card(
                 elevation: 0,
                 margin: EdgeInsets.zero,
@@ -270,7 +239,12 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
                 color: AppColors.secondaryColor,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (builder) => ActionsScreen()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => ActionsScreen(
+                                  journey: Journey(_destination, _selectedDate.toString(), _daysCount.toInt(), []),
+                                )));
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(14.0),
