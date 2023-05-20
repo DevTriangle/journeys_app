@@ -8,6 +8,8 @@ import 'package:journeys_app/view/widgets/app_text_field.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class CreateJourneyScreen extends StatefulWidget {
+  const CreateJourneyScreen({super.key});
+
   @override
   State<StatefulWidget> createState() => CreateJourneyScreenState();
 }
@@ -18,7 +20,6 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
 
   double _daysCount = 1;
   String _destination = "";
-  String _selectedType = "Деловая";
   DateTime _selectedDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
@@ -240,11 +241,14 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (builder) => ActionsScreen(
-                                  journey: Journey(_destination, _selectedDate.toString(), _daysCount.toInt(), [], []),
-                                )));
+                      context,
+                      MaterialPageRoute(
+                        builder: (builder) => ActionsScreen(
+                          journey: Journey(_destination, _selectedDate.toString(), _daysCount.toInt(), [], []),
+                          isEditing: false,
+                        ),
+                      ),
+                    );
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(14.0),
