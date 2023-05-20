@@ -5,7 +5,7 @@ class Journey {
   final String destination;
   final String dateTime;
   final int daysCount;
-  final List<String> actions;
+  List<String> actions;
   List<JourneyItem> items;
 
   Journey(
