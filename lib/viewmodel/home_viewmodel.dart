@@ -7,9 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/currency_item.dart';
+import '../model/journey.dart';
 
 class HomeViewModel extends ChangeNotifier {
   List<WeatherItem> weatherList = [];
+  List<Journey> journeys = [];
   List<CurrencyItem> currencyList = [];
 
   Future<WeatherItem> getCurrentWeather(String location) async {
@@ -75,5 +77,19 @@ class HomeViewModel extends ChangeNotifier {
 
       return List<CurrencyItem>.empty();
     }
+  }
+
+  Future<List<Journey>> loadJourneys() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    journeys.clear();
+    if (sharedPreferences.getString("journeys") != null) {
+      Iterable l = json.decode(sharedPreferences.getString("journeys").toString());
+      List<Journey> j = List.from(l.map((e) => Journey.fromJson(e)));
+
+      journeys.addAll(j);
+    }
+
+    return journeys;
   }
 }

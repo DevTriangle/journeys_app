@@ -18,7 +18,7 @@ class Journey {
       json["destination"],
       json["dateTime"],
       json["daysCount"],
-      json["actions"],
+      List<String>.from(json["actions"]),
     );
   }
 
