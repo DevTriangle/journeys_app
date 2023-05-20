@@ -51,6 +51,8 @@ class HomeViewModel extends ChangeNotifier {
       weatherList.add(await getCurrentWeather(w));
     }
 
+    await getCurrencyRates();
+
     return weatherList;
   }
 
@@ -64,6 +66,7 @@ class HomeViewModel extends ChangeNotifier {
         Map<String, double> rates = Map.from(jsonDecode(response.body)["rates"]);
 
         rates.forEach((key, value) {
+          print(value);
           currencyList.add(CurrencyItem(key, value));
         });
       }

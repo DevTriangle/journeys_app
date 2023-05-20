@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:journeys_app/model/currency_item.dart';
 import 'package:journeys_app/model/weather_item.dart';
 import 'package:journeys_app/view/colors.dart';
 import 'package:journeys_app/view/widgets/app_card.dart';
@@ -20,8 +21,16 @@ class ToolsScreenState extends State<ToolsScreen> {
   bool _weatherExpaned = true;
 
   String _weatherLocation = "";
+  String _currencyValue = "USD";
+
+  CurrencyItem _selectedCurrency = CurrencyItem("USD", 0.0);
+
+  String _firstCurrencyText = "";
 
   late Future<List<WeatherItem>> _weatherFuture;
+
+  final TextEditingController _tController = TextEditingController();
+  final TextEditingController _currencyController = TextEditingController();
 
   @override
   void initState() {
@@ -30,6 +39,8 @@ class ToolsScreenState extends State<ToolsScreen> {
     viewModel = Provider.of<HomeViewModel>(context, listen: false);
 
     _weatherFuture = viewModel.getWeatherList();
+
+    _tController.text = "RUB";
   }
 
   @override
@@ -72,65 +83,54 @@ class ToolsScreenState extends State<ToolsScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Container(
+                            padding: EdgeInsets.only(bottom: 6),
+                            child: Text(
+                              "Название города",
+                              style: TextStyle(color: AppColors.hintColor, fontSize: 14),
+                            ),
+                          ),
+                          AppTextField(
+                              hint: "",
+                              onChanged: (value) {
+                                _weatherLocation = value;
+                              }),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Container(
-                                padding: EdgeInsets.only(bottom: 6),
-                                child: Text(
-                                  "Название города",
-                                  style: TextStyle(
-                                      color: AppColors.hintColor, fontSize: 14),
+                              TextButton(
+                                onPressed: () async {
+                                  if (_weatherLocation.trim().isNotEmpty) {
+                                    SharedPreferences shared = await SharedPreferences.getInstance();
+
+                                    List<String> wList = [];
+
+                                    if (shared.getString("weatherList") != null) {
+                                      wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
+                                    }
+
+                                    if (!wList.contains(_weatherLocation)) {
+                                      wList.add(_weatherLocation);
+                                    }
+
+                                    await shared.setString("weatherList", jsonEncode(wList));
+
+                                    _weatherFuture = viewModel.getWeatherList();
+
+                                    setState(() {});
+
+                                    Navigator.pop(context);
+                                  }
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  child: Text("Добавить"),
                                 ),
                               ),
-                              AppTextField(
-                                  hint: "",
-                                  onChanged: (value) {
-                                    _weatherLocation = value;
-                                  }),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    onPressed: () async {
-                                      if (_weatherLocation.trim().isNotEmpty) {
-                                        SharedPreferences shared =
-                                            await SharedPreferences
-                                                .getInstance();
-
-                                        List<String> wList = [];
-
-                                        if (shared.getString("weatherList") !=
-                                            null) {
-                                          wList.addAll(List<String>.from(
-                                              jsonDecode(shared
-                                                  .getString("weatherList")!)));
-                                        }
-
-                                        if (!wList.contains(_weatherLocation)) {
-                                          wList.add(_weatherLocation);
-                                        }
-
-                                        await shared.setString(
-                                            "weatherList", jsonEncode(wList));
-
-                                        _weatherFuture =
-                                            viewModel.getWeatherList();
-
-                                        setState(() {});
-
-                                        Navigator.pop(context);
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12, vertical: 6),
-                                      child: Text("Добавить"),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ]),
+                            ],
+                          ),
+                        ]),
                       ),
                     ],
                   ),
@@ -151,7 +151,120 @@ class ToolsScreenState extends State<ToolsScreen> {
             AppToolCard(
               label: "Конвертер валют",
               icon: Icons.currency_exchange_rounded,
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (builder) {
+                    return StatefulBuilder(builder: (context, setDialogState) {
+                      return Dialog(
+                        backgroundColor: AppColors.backgroundColor,
+                        child: Wrap(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                Row(
+                                  children: [
+                                    Expanded(child: Text("Валюта")),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(child: Text("Количество")),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: AppTextField(
+                                        hint: "",
+                                        controller: _tController,
+                                        onChanged: (value) {},
+                                        readOnly: true,
+                                        inputType: TextInputType.number,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      child: AppTextField(
+                                          hint: "",
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _firstCurrencyText = value;
+
+                                              if (_firstCurrencyText.isNotEmpty) {
+                                                _currencyController.text = (double.parse(_firstCurrencyText) * _selectedCurrency.rate).toStringAsFixed(2);
+                                              }
+                                            });
+
+                                            setDialogState(() {});
+                                          }),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                                        decoration: BoxDecoration(color: Colors.white),
+                                        child: DropdownButtonHideUnderline(
+                                          child: DropdownButton<String>(
+                                            dropdownColor: Colors.white,
+                                            items: viewModel.currencyList.map((CurrencyItem item) {
+                                              return DropdownMenuItem<String>(value: item.currency, child: Text(item.currency));
+                                            }).toList(),
+                                            value: _currencyValue,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16,
+                                              fontFamily: "Rubik",
+                                            ),
+                                            onChanged: (value) {
+                                              _currencyValue = value!;
+
+                                              for (var c in viewModel.currencyList) {
+                                                if (c.currency == value) {
+                                                  _selectedCurrency = c;
+
+                                                  if (_firstCurrencyText.isNotEmpty) {
+                                                    _currencyController.text = (double.parse(_firstCurrencyText) * _selectedCurrency.rate).toStringAsFixed(2);
+                                                  }
+                                                }
+                                              }
+
+                                              setDialogState(() {});
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 16,
+                                    ),
+                                    Expanded(
+                                      child: AppTextField(
+                                        hint: "",
+                                        onChanged: (value) {},
+                                        controller: _currencyController,
+                                        readOnly: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ]),
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+                  },
+                );
+              },
             ),
             const SizedBox(
               height: 16,
@@ -171,6 +284,11 @@ class ToolsScreenState extends State<ToolsScreen> {
                 ? FutureBuilder(
                     future: _weatherFuture,
                     builder: (context, snapshot) {
+                      for (var c in viewModel.currencyList) {
+                        if (c.currency == _currencyValue) {
+                          _selectedCurrency = c;
+                        }
+                      }
                       return Expanded(
                         child: ListView.builder(
                           itemCount: viewModel.weatherList.length,
@@ -182,8 +300,7 @@ class ToolsScreenState extends State<ToolsScreen> {
                                   context: context,
                                   builder: (builder) {
                                     return Dialog(
-                                      backgroundColor:
-                                          AppColors.backgroundColor,
+                                      backgroundColor: AppColors.backgroundColor,
                                       child: Wrap(
                                         children: [
                                           Padding(
@@ -193,73 +310,46 @@ class ToolsScreenState extends State<ToolsScreen> {
                                                 Container(
                                                   child: Text(
                                                     "Удалить выбранный город из списка?",
-                                                    style: TextStyle(
-                                                        color:
-                                                            AppColors.hintColor,
-                                                        fontSize: 14),
+                                                    style: TextStyle(color: AppColors.hintColor, fontSize: 14),
                                                   ),
                                                 ),
                                                 SizedBox(
                                                   height: 16,
                                                 ),
                                                 Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     TextButton(
                                                       onPressed: () async {
                                                         Navigator.pop(context);
                                                       },
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 6),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                                         child: Text("Отменить"),
                                                       ),
                                                     ),
                                                     TextButton(
                                                       onPressed: () async {
-                                                        SharedPreferences
-                                                            shared =
-                                                            await SharedPreferences
-                                                                .getInstance();
+                                                        SharedPreferences shared = await SharedPreferences.getInstance();
 
                                                         List<String> wList = [];
 
-                                                        if (shared.getString(
-                                                                "weatherList") !=
-                                                            null) {
-                                                          wList.addAll(List<
-                                                                  String>.from(
-                                                              jsonDecode(shared
-                                                                  .getString(
-                                                                      "weatherList")!)));
+                                                        if (shared.getString("weatherList") != null) {
+                                                          wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
                                                         }
 
-                                                        wList.remove(viewModel
-                                                            .weatherList[index]
-                                                            .name);
+                                                        wList.remove(viewModel.weatherList[index].name);
 
-                                                        await shared.setString(
-                                                            "weatherList",
-                                                            jsonEncode(wList));
+                                                        await shared.setString("weatherList", jsonEncode(wList));
 
-                                                        _weatherFuture = viewModel
-                                                            .getWeatherList();
+                                                        _weatherFuture = viewModel.getWeatherList();
 
                                                         setState(() {});
 
                                                         Navigator.pop(context);
                                                       },
                                                       child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 6),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                                         child: Text("Удалить"),
                                                       ),
                                                     ),
