@@ -19,6 +19,7 @@ class ToolsScreenState extends State<ToolsScreen> {
   late HomeViewModel viewModel;
 
   bool _weatherExpaned = true;
+  bool _currencyEnabled = false;
 
   String _weatherLocation = "";
   String _currencyValue = "USD";
@@ -152,118 +153,137 @@ class ToolsScreenState extends State<ToolsScreen> {
               label: "Конвертер валют",
               icon: Icons.currency_exchange_rounded,
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (builder) {
-                    return StatefulBuilder(builder: (context, setDialogState) {
-                      return Dialog(
-                        backgroundColor: AppColors.backgroundColor,
-                        child: Wrap(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                Row(
-                                  children: [
-                                    Expanded(child: Text("Валюта")),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    Expanded(child: Text("Количество")),
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: AppTextField(
-                                        hint: "",
-                                        controller: _tController,
-                                        onChanged: (value) {},
-                                        readOnly: true,
-                                        inputType: TextInputType.number,
+                if (_currencyEnabled) {
+                  showDialog(
+                    context: context,
+                    builder: (builder) {
+                      return StatefulBuilder(builder: (context, setDialogState) {
+                        return Dialog(
+                          backgroundColor: AppColors.backgroundColor,
+                          child: Wrap(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                  Row(
+                                    children: [
+                                      Expanded(child: Text("Валюта")),
+                                      SizedBox(
+                                        width: 4,
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    Expanded(
-                                      child: AppTextField(
+                                      Expanded(child: Text("Количество")),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: AppTextField(
                                           hint: "",
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _firstCurrencyText = value;
-
-                                              if (_firstCurrencyText.isNotEmpty) {
-                                                _currencyController.text = (double.parse(_firstCurrencyText) * _selectedCurrency.rate).toStringAsFixed(2);
-                                              }
-                                            });
-
-                                            setDialogState(() {});
-                                          }),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                                        decoration: BoxDecoration(color: Colors.white),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            dropdownColor: Colors.white,
-                                            items: viewModel.currencyList.map((CurrencyItem item) {
-                                              return DropdownMenuItem<String>(value: item.currency, child: Text(item.currency));
-                                            }).toList(),
-                                            value: _currencyValue,
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 16,
-                                              fontFamily: "Rubik",
-                                            ),
+                                          controller: _tController,
+                                          onChanged: (value) {},
+                                          readOnly: true,
+                                          inputType: TextInputType.number,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
+                                      Expanded(
+                                        child: AppTextField(
+                                            hint: "",
                                             onChanged: (value) {
-                                              _currencyValue = value!;
+                                              setState(() {
+                                                _firstCurrencyText = value;
 
-                                              for (var c in viewModel.currencyList) {
-                                                if (c.currency == value) {
-                                                  _selectedCurrency = c;
-
-                                                  if (_firstCurrencyText.isNotEmpty) {
-                                                    _currencyController.text = (double.parse(_firstCurrencyText) * _selectedCurrency.rate).toStringAsFixed(2);
-                                                  }
+                                                if (_firstCurrencyText.isNotEmpty) {
+                                                  _currencyController.text = (double.parse(_firstCurrencyText) * _selectedCurrency.rate).toStringAsFixed(2);
                                                 }
-                                              }
+                                              });
 
                                               setDialogState(() {});
-                                            },
+                                            }),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                                          decoration: BoxDecoration(color: Colors.white),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              dropdownColor: Colors.white,
+                                              items: viewModel.currencyList.map((CurrencyItem item) {
+                                                return DropdownMenuItem<String>(value: item.currency, child: Text(item.currency));
+                                              }).toList(),
+                                              value: _currencyValue,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 16,
+                                                fontFamily: "Rubik",
+                                              ),
+                                              onChanged: (value) {
+                                                _currencyValue = value!;
+
+                                                for (var c in viewModel.currencyList) {
+                                                  if (c.currency == value) {
+                                                    _selectedCurrency = c;
+
+                                                    if (_firstCurrencyText.isNotEmpty) {
+                                                      _currencyController.text = (double.parse(_firstCurrencyText) * _selectedCurrency.rate).toStringAsFixed(2);
+                                                    }
+                                                  }
+                                                }
+
+                                                setDialogState(() {});
+                                              },
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 16,
-                                    ),
-                                    Expanded(
-                                      child: AppTextField(
-                                        hint: "",
-                                        onChanged: (value) {},
-                                        controller: _currencyController,
-                                        readOnly: true,
+                                      SizedBox(
+                                        width: 4,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ]),
-                            ),
-                          ],
-                        ),
-                      );
-                    });
-                  },
-                );
+                                      Expanded(
+                                        child: AppTextField(
+                                          hint: "",
+                                          onChanged: (value) {},
+                                          controller: _currencyController,
+                                          readOnly: true,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                          child: Text("Закрыть"),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                    },
+                  );
+                }
               },
             ),
             const SizedBox(
@@ -284,11 +304,16 @@ class ToolsScreenState extends State<ToolsScreen> {
                 ? FutureBuilder(
                     future: _weatherFuture,
                     builder: (context, snapshot) {
-                      for (var c in viewModel.currencyList) {
-                        if (c.currency == _currencyValue) {
-                          _selectedCurrency = c;
+                      if (snapshot.hasData) {
+                        for (var c in viewModel.currencyList) {
+                          if (c.currency == _currencyValue) {
+                            _selectedCurrency = c;
+                          }
                         }
+
+                        _currencyEnabled = true;
                       }
+
                       return Expanded(
                         child: ListView.builder(
                           itemCount: viewModel.weatherList.length,
