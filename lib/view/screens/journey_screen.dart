@@ -42,6 +42,11 @@ class JourneyScreenState extends State<JourneyScreen> {
                         itemBuilder: ((context, index) {
                           return AppJourneyCard(
                             journey: snapshot.data![index],
+                            onChanged: (list) {
+                              viewModel.journeys[index].items = list;
+                              viewModel.saveJourneys();
+                              setState(() {});
+                            },
                             onTap: () {
                               if (currentJourney == snapshot.data![index]) {
                                 currentJourney = null;

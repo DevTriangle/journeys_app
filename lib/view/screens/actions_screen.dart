@@ -93,7 +93,7 @@ class ActionsScreenState extends State<ActionsScreen> {
       actions.add(a.label);
     }
     await _loadJourneys();
-    _journeys.add(Journey(widget.journey.destination, widget.journey.dateTime, widget.journey.daysCount, actions));
+    _journeys.add(Journey(widget.journey.destination, widget.journey.dateTime, widget.journey.daysCount, actions, widget.journey.items));
     await sharedPreferences.setString("journeys", jsonEncode(_journeys.map((e) => e.toJson()).toList()));
     Navigator.push(context, MaterialPageRoute(builder: (b) => HomeScreen()));
   }

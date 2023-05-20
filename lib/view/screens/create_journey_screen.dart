@@ -243,7 +243,7 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (builder) => ActionsScreen(
-                                  journey: Journey(_destination, _selectedDate.toString(), _daysCount.toInt(), []),
+                                  journey: Journey(_destination, _selectedDate.toString(), _daysCount.toInt(), [], []),
                                 )));
                   },
                   child: Padding(

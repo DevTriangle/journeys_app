@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/currency_item.dart';
 import '../model/journey.dart';
+import '../model/journey_item.dart';
 
 class HomeViewModel extends ChangeNotifier {
   List<WeatherItem> weatherList = [];
@@ -89,6 +90,14 @@ class HomeViewModel extends ChangeNotifier {
 
       journeys.addAll(j);
     }
+
+    return journeys;
+  }
+
+  Future<List<Journey>> saveJourneys() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    await sharedPreferences.setString("journeys", jsonEncode(journeys.map((e) => e.toJson()).toList()));
 
     return journeys;
   }

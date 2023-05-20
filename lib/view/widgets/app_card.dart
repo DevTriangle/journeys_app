@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:journeys_app/model/journey.dart';
@@ -231,6 +233,7 @@ class ActionCard extends StatelessWidget {
 class AppJourneyCard extends StatefulWidget {
   final Journey journey;
   final Function() onTap;
+  final Function(List<JourneyItem>) onChanged;
   final bool? isExpanded;
   final EdgeInsets? margin;
 
@@ -240,6 +243,7 @@ class AppJourneyCard extends StatefulWidget {
     required this.onTap,
     this.isExpanded,
     this.margin = EdgeInsets.zero,
+    required this.onChanged,
   });
 
   @override
@@ -247,6 +251,32 @@ class AppJourneyCard extends StatefulWidget {
 }
 
 class AppJourneyCardState extends State<AppJourneyCard> {
+  final List<JourneyItem> _items = [
+    JourneyItem("Плавание", "Плавки"),
+    JourneyItem("Плавание", "Сланцы"),
+    JourneyItem("Ужин в ресторане", "Деловаой костюм"),
+    JourneyItem("Бег", "Кроссовки"),
+    JourneyItem("Бег", "Футболка"),
+    JourneyItem("Бег", "Шорты"),
+    JourneyItem("Велотуризм", "Велосипед"),
+    JourneyItem("Пешеходный туризм", "Кроссовки"),
+    JourneyItem("Уход за детьми", "Коляска"),
+    JourneyItem("Уход за детьми", "Игрушки"),
+    JourneyItem("Пляж", "Плавки"),
+    JourneyItem("Пляж", "Сланцы"),
+    JourneyItem("Пляж", "Полотенце"),
+    JourneyItem("Пляж", "Солнечные очки"),
+  ];
+
+  List<JourneyItem> _selectedItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _selectedItems.addAll(widget.journey.items);
+  }
+
   String _getRange() {
     DateFormat date = DateFormat("dd.MM");
 
@@ -312,14 +342,22 @@ class AppJourneyCardState extends State<AppJourneyCard> {
                 child: Column(
                   children: [
                     Container(
-                      constraints: BoxConstraints(maxHeight: 400),
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: 2,
+                        itemCount: widget.journey.actions.length,
                         itemBuilder: (b, index) {
                           return AppCompactToolCard(
-                            label: "label",
-                            onTap: () {},
+                            items: _items.where((element) => element.category == widget.journey.actions[index]).toList(),
+                            onItemAdd: (j) {
+                              _selectedItems.add(j);
+                              widget.onChanged(_selectedItems);
+                            },
+                            onItemRemove: (j) {
+                              _selectedItems.remove(j);
+                              widget.onChanged(_selectedItems);
+                            },
+                            category: widget.journey.actions[index],
+                            selectedItems: _selectedItems,
                           );
                         },
                       ),
@@ -334,15 +372,21 @@ class AppJourneyCardState extends State<AppJourneyCard> {
 }
 
 class AppCompactToolCard extends StatefulWidget {
-  final String label;
-  final Function() onTap;
+  final String category;
+  final Function(JourneyItem) onItemAdd;
+  final Function(JourneyItem) onItemRemove;
+  final List<JourneyItem> items;
+  final List<JourneyItem> selectedItems;
   final EdgeInsets? margin;
 
   const AppCompactToolCard({
     super.key,
-    required this.label,
-    required this.onTap,
     this.margin = EdgeInsets.zero,
+    required this.category,
+    required this.items,
+    required this.onItemAdd,
+    required this.onItemRemove,
+    required this.selectedItems,
   });
 
   @override
@@ -351,7 +395,6 @@ class AppCompactToolCard extends StatefulWidget {
 
 class AppCompactToolCardState extends State<AppCompactToolCard> {
   bool isExpanded = false;
-  List<JourneyItem> _items = [];
 
   @override
   Widget build(BuildContext context) {
@@ -379,7 +422,7 @@ class AppCompactToolCardState extends State<AppCompactToolCard> {
                         Row(
                           children: [
                             Text(
-                              widget.label,
+                              widget.category,
                               style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
@@ -403,17 +446,31 @@ class AppCompactToolCardState extends State<AppCompactToolCard> {
         ),
         isExpanded == true
             ? Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   children: [
                     Container(
-                      constraints: BoxConstraints(maxHeight: 400),
                       child: ListView.builder(
                         shrinkWrap: true,
-                        itemCount: _items.length,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: widget.items.length,
                         itemBuilder: (b, index) {
                           return Row(
-                            children: [Text(_items[index].name)],
+                            children: [
+                              Checkbox(
+                                value: widget.selectedItems
+                                    .any((element) => element.category == widget.items[index].category && element.name == widget.items[index].name),
+                                onChanged: (value) {
+                                  if (value == true) {
+                                    widget.onItemAdd(widget.items[index]);
+                                  } else {
+                                    widget.onItemRemove(widget.items[index]);
+                                  }
+                                  setState(() {});
+                                },
+                              ),
+                              Text(widget.items[index].name),
+                            ],
                           );
                         },
                       ),

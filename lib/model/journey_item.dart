@@ -10,4 +10,9 @@ class JourneyItem {
       json["name"],
     );
   }
+
+  Map toJson() => {
+        "category": category,
+        "name": name,
+      };
 }
