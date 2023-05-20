@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:journeys_app/model/journey.dart';
+import 'package:journeys_app/model/journey_item.dart';
 import 'package:journeys_app/model/weather_item.dart';
 import 'package:journeys_app/model/app_action.dart';
 import 'package:journeys_app/view/colors.dart';
@@ -221,6 +224,205 @@ class ActionCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AppJourneyCard extends StatefulWidget {
+  final Journey journey;
+  final Function() onTap;
+  final bool? isExpanded;
+  final EdgeInsets? margin;
+
+  const AppJourneyCard({
+    super.key,
+    required this.journey,
+    required this.onTap,
+    this.isExpanded,
+    this.margin = EdgeInsets.zero,
+  });
+
+  @override
+  State<StatefulWidget> createState() => AppJourneyCardState();
+}
+
+class AppJourneyCardState extends State<AppJourneyCard> {
+  String _getRange() {
+    DateFormat date = DateFormat("dd.MM");
+
+    return "${date.format(DateTime.parse(widget.journey.dateTime))} - ${date.format(DateTime.parse(widget.journey.dateTime).add(Duration(days: widget.journey.daysCount)))}";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Card(
+                margin: widget.margin,
+                elevation: 0,
+                shape: Border(),
+                color: AppColors.primaryColor,
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: widget.onTap,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.journey.destination,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              _getRange(),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        widget.isExpanded != null
+                            ? Icon(
+                                widget.isExpanded == true ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+                                color: Colors.white,
+                              )
+                            : SizedBox(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        widget.isExpanded == true
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 400),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: 2,
+                        itemBuilder: (b, index) {
+                          return AppCompactToolCard(
+                            label: "label",
+                            onTap: () {},
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : const SizedBox(),
+      ],
+    );
+  }
+}
+
+class AppCompactToolCard extends StatefulWidget {
+  final String label;
+  final Function() onTap;
+  final EdgeInsets? margin;
+
+  const AppCompactToolCard({
+    super.key,
+    required this.label,
+    required this.onTap,
+    this.margin = EdgeInsets.zero,
+  });
+
+  @override
+  State<StatefulWidget> createState() => AppCompactToolCardState();
+}
+
+class AppCompactToolCardState extends State<AppCompactToolCard> {
+  bool isExpanded = false;
+  List<JourneyItem> _items = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Card(
+                margin: widget.margin,
+                elevation: 0,
+                shape: Border(),
+                color: AppColors.primaryColor,
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  onTap: () {
+                    isExpanded = !isExpanded;
+                    setState(() {});
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              widget.label,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        isExpanded != null
+                            ? Icon(
+                                isExpanded == true ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+                                color: Colors.white,
+                              )
+                            : SizedBox(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        isExpanded == true
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(maxHeight: 400),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: _items.length,
+                        itemBuilder: (b, index) {
+                          return Row(
+                            children: [Text(_items[index].name)],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : const SizedBox(),
+      ],
     );
   }
 }

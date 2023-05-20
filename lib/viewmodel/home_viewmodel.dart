@@ -7,17 +7,18 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/currency_item.dart';
+import '../model/journey.dart';
 
 class HomeViewModel extends ChangeNotifier {
   List<WeatherItem> weatherList = [];
+  List<Journey> journeys = [];
   List<CurrencyItem> currencyList = [];
 
   Future<WeatherItem> getCurrentWeather(String location) async {
     WeatherItem weatherItem;
 
     try {
-      http.Response response = await http.get(Uri.parse(
-          "https://nominatim.openstreetmap.org/search?q=${location.replaceAll('&', '')}&format=json"));
+      http.Response response = await http.get(Uri.parse("https://nominatim.openstreetmap.org/search?q=${location.replaceAll('&', '')}&format=json"));
 
       http.Response wResponse = await http.get(Uri.parse(
           "https://api.open-meteo.com/v1/forecast?latitude=${double.parse(jsonDecode(response.body)[0]["lat"])}&longitude=${double.parse(jsonDecode(response.body)[0]["lon"])}&current_weather=true"));
@@ -43,8 +44,7 @@ class HomeViewModel extends ChangeNotifier {
     List<String> wList = [];
 
     if (shared.getString("weatherList") != null) {
-      wList.addAll(
-          List<String>.from(jsonDecode(shared.getString("weatherList")!)));
+      wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
     }
 
     for (var w in wList) {
@@ -58,12 +58,10 @@ class HomeViewModel extends ChangeNotifier {
     currencyList.clear();
 
     try {
-      http.Response response =
-          await http.get(Uri.parse("https://www.cbr-xml-daily.ru/latest.js"));
+      http.Response response = await http.get(Uri.parse("https://www.cbr-xml-daily.ru/latest.js"));
 
       if (response.statusCode == 200) {
-        Map<String, double> rates =
-            Map.from(jsonDecode(response.body)["rates"]);
+        Map<String, double> rates = Map.from(jsonDecode(response.body)["rates"]);
 
         rates.forEach((key, value) {
           currencyList.add(CurrencyItem(key, value));
@@ -76,5 +74,19 @@ class HomeViewModel extends ChangeNotifier {
 
       return List<CurrencyItem>.empty();
     }
+  }
+
+  Future<List<Journey>> loadJourneys() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    journeys.clear();
+    if (sharedPreferences.getString("journeys") != null) {
+      Iterable l = json.decode(sharedPreferences.getString("journeys").toString());
+      List<Journey> j = List.from(l.map((e) => Journey.fromJson(e)));
+
+      journeys.addAll(j);
+    }
+
+    return journeys;
   }
 }
