@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:journeys_app/view/screens/actions_screen.dart';
 import 'package:journeys_app/view/screens/create_journey_screen.dart';
 import 'package:journeys_app/model/journey_item.dart';
+import 'package:journeys_app/view/screens/home_screen.dart';
 import 'package:journeys_app/view/widgets/app_card.dart';
 import 'package:journeys_app/viewmodel/home_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,7 @@ class JourneyScreenState extends State<JourneyScreen> {
   late Future<List<Journey>> _getJourneys;
   Journey? currentJourney;
 
-  String _categoryValue = "";
+  String _actionValue = "";
   String _itemName = "";
 
   @override
@@ -128,6 +129,8 @@ class JourneyScreenState extends State<JourneyScreen> {
                             },
                             isExpanded: currentJourney == snapshot.data![index],
                             onAddTap: () {
+                              _actionValue = snapshot.data![index].actions[0];
+
                               showDialog(
                                 context: context,
                                 builder: (builder) {
@@ -139,33 +142,38 @@ class JourneyScreenState extends State<JourneyScreen> {
                                           Padding(
                                             padding: const EdgeInsets.all(16),
                                             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                              Expanded(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-                                                  decoration: BoxDecoration(color: Colors.white),
-                                                  child: DropdownButtonHideUnderline(
-                                                    child: DropdownButton<String>(
-                                                      dropdownColor: Colors.white,
-                                                      items: snapshot.data![index].actions.map((String item) {
-                                                        return DropdownMenuItem<String>(value: item, child: Text(item));
-                                                      }).toList(),
-                                                      value: _categoryValue,
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 16,
-                                                        fontFamily: "Rubik",
-                                                      ),
-                                                      onChanged: (value) {
-                                                        _categoryValue = value!;
-                                                        setDialogState(() {});
-                                                      },
+                                              Container(
+                                                padding: EdgeInsets.only(bottom: 6),
+                                                child: Text(
+                                                  "Действие",
+                                                  style: TextStyle(color: AppColors.hintColor, fontSize: 14),
+                                                ),
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                                                decoration: BoxDecoration(color: Colors.white),
+                                                child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    dropdownColor: Colors.white,
+                                                    items: snapshot.data![index].actions.map((String item) {
+                                                      return DropdownMenuItem<String>(value: item, child: Text(item));
+                                                    }).toList(),
+                                                    value: _actionValue,
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.w500,
+                                                      fontSize: 16,
+                                                      fontFamily: "Rubik",
                                                     ),
+                                                    onChanged: (value) {
+                                                      _actionValue = value!;
+                                                      setDialogState(() {});
+                                                    },
                                                   ),
                                                 ),
                                               ),
                                               Container(
-                                                padding: EdgeInsets.only(bottom: 6),
+                                                padding: EdgeInsets.only(bottom: 6, top: 6),
                                                 child: Text(
                                                   "Название предмета",
                                                   style: TextStyle(color: AppColors.hintColor, fontSize: 14),
@@ -181,12 +189,12 @@ class JourneyScreenState extends State<JourneyScreen> {
                                                 children: [
                                                   TextButton(
                                                     onPressed: () async {
-                                                      viewModel.journeys[index].items.add(JourneyItem(_categoryValue, _itemName));
+                                                      viewModel.journeys[index].items.add(JourneyItem(_actionValue, _itemName));
                                                       await viewModel.saveJourneys();
 
                                                       setState(() {});
 
-                                                      Navigator.pop(context);
+                                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder) => HomeScreen()));
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

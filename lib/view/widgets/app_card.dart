@@ -277,6 +277,10 @@ class AppJourneyCardState extends State<AppJourneyCard> {
     super.initState();
 
     _selectedItems.addAll(widget.journey.items);
+
+    for (var i in widget.journey.items) {
+      _items.add(i);
+    }
   }
 
   String _getRange() {
