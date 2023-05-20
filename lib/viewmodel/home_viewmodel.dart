@@ -6,8 +6,11 @@ import 'package:journeys_app/model/weather_item.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../model/currency_item.dart';
+
 class HomeViewModel extends ChangeNotifier {
   List<WeatherItem> weatherList = [];
+  List<CurrencyItem> currencyList = [];
 
   Future<WeatherItem> getCurrentWeather(String location) async {
     WeatherItem weatherItem;
@@ -49,5 +52,29 @@ class HomeViewModel extends ChangeNotifier {
     }
 
     return weatherList;
+  }
+
+  Future<List<CurrencyItem>> getCurrencyRates() async {
+    currencyList.clear();
+
+    try {
+      http.Response response =
+          await http.get(Uri.parse("https://www.cbr-xml-daily.ru/latest.js"));
+
+      if (response.statusCode == 200) {
+        Map<String, double> rates =
+            Map.from(jsonDecode(response.body)["rates"]);
+
+        rates.forEach((key, value) {
+          currencyList.add(CurrencyItem(key, value));
+        });
+      }
+
+      return currencyList;
+    } catch (e) {
+      print(e);
+
+      return List<CurrencyItem>.empty();
+    }
   }
 }
