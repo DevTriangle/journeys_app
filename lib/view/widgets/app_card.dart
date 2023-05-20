@@ -232,6 +232,7 @@ class ActionCard extends StatelessWidget {
 
 class AppJourneyCard extends StatefulWidget {
   final Journey journey;
+  final Function() onAddTap;
   final Function() onTap;
   final Function(List<JourneyItem>) onChanged;
   final bool? isExpanded;
@@ -240,6 +241,7 @@ class AppJourneyCard extends StatefulWidget {
   const AppJourneyCard({
     super.key,
     required this.journey,
+    required this.onAddTap,
     required this.onTap,
     this.isExpanded,
     this.margin = EdgeInsets.zero,
@@ -322,12 +324,24 @@ class AppJourneyCardState extends State<AppJourneyCard> {
                             ),
                           ],
                         ),
-                        widget.isExpanded != null
-                            ? Icon(
-                                widget.isExpanded == true ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: widget.onAddTap,
+                              icon: Icon(
+                                Icons.add_rounded,
                                 color: Colors.white,
-                              )
-                            : SizedBox(),
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            widget.isExpanded != null
+                                ? Icon(
+                                    widget.isExpanded == true ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+                                    color: Colors.white,
+                                  )
+                                : SizedBox(),
+                          ],
+                        )
                       ],
                     ),
                   ),
