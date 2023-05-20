@@ -16,8 +16,7 @@ class HomeViewModel extends ChangeNotifier {
     WeatherItem weatherItem;
 
     try {
-      http.Response response = await http.get(Uri.parse(
-          "https://nominatim.openstreetmap.org/search?q=${location.replaceAll('&', '')}&format=json"));
+      http.Response response = await http.get(Uri.parse("https://nominatim.openstreetmap.org/search?q=${location.replaceAll('&', '')}&format=json"));
 
       http.Response wResponse = await http.get(Uri.parse(
           "https://api.open-meteo.com/v1/forecast?latitude=${double.parse(jsonDecode(response.body)[0]["lat"])}&longitude=${double.parse(jsonDecode(response.body)[0]["lon"])}&current_weather=true"));
@@ -43,13 +42,14 @@ class HomeViewModel extends ChangeNotifier {
     List<String> wList = [];
 
     if (shared.getString("weatherList") != null) {
-      wList.addAll(
-          List<String>.from(jsonDecode(shared.getString("weatherList")!)));
+      wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
     }
 
     for (var w in wList) {
       weatherList.add(await getCurrentWeather(w));
     }
+
+    await getCurrencyRates();
 
     return weatherList;
   }
@@ -58,14 +58,13 @@ class HomeViewModel extends ChangeNotifier {
     currencyList.clear();
 
     try {
-      http.Response response =
-          await http.get(Uri.parse("https://www.cbr-xml-daily.ru/latest.js"));
+      http.Response response = await http.get(Uri.parse("https://www.cbr-xml-daily.ru/latest.js"));
 
       if (response.statusCode == 200) {
-        Map<String, double> rates =
-            Map.from(jsonDecode(response.body)["rates"]);
+        Map<String, double> rates = Map.from(jsonDecode(response.body)["rates"]);
 
         rates.forEach((key, value) {
+          print(value);
           currencyList.add(CurrencyItem(key, value));
         });
       }
