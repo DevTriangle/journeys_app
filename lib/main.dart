@@ -21,12 +21,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Journeys App',
       theme: ThemeData(
         primaryColor: AppColors.primaryColor,
         scaffoldBackgroundColor: AppColors.backgroundColor,
       ),
-      home: HomeScreen(),
+      home: CreateJourneyScreen(),
     );
   }
 }
