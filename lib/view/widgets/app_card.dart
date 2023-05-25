@@ -63,7 +63,7 @@ class AppToolCard extends StatelessWidget {
                     ),
                     isExpanded != null
                         ? Icon(
-                            isExpanded == true ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
+                            isExpanded == true ? Icons.arrow_drop_down_rounded : Icons.arrow_drop_up_rounded,
                             color: Colors.white,
                           )
                         : SizedBox(),
