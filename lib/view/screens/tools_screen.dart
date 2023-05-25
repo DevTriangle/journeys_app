@@ -408,7 +408,8 @@ class ToolsScreenState extends State<ToolsScreen> {
                           ),
                         );
                       } else {
-                        return Expanded(
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
                           child: Center(
                             child: CircularProgressIndicator(),
                           ),
