@@ -408,8 +408,10 @@ class ToolsScreenState extends State<ToolsScreen> {
                           ),
                         );
                       } else {
-                        return Center(
-                          child: CircularProgressIndicator(),
+                        return Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         );
                       }
                     })
