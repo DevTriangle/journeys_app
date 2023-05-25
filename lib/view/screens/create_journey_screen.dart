@@ -8,6 +8,9 @@ import 'package:journeys_app/view/widgets/app_dropdowm.dart';
 import 'package:journeys_app/view/widgets/app_text_field.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
+import '../shapes.dart';
+import '../widgets/app_snackbar.dart';
+
 class CreateJourneyScreen extends StatefulWidget {
   const CreateJourneyScreen({super.key});
 
@@ -22,6 +25,14 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
   double _daysCount = 1;
   String _destination = "";
   DateTime _selectedDate = DateTime.now();
+  DateTime _startDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _startDate = _selectedDate;
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -241,15 +252,29 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
                 color: AppColors.secondaryColor,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (builder) => ActionsScreen(
-                          journey: Journey(_destination, _selectedDate.toString(), _daysCount.toInt(), [], []),
-                          isEditing: false,
+                    if (_destination.isNotEmpty && _selectedDate != _startDate) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (builder) => ActionsScreen(
+                            journey: Journey(_destination, _selectedDate.toString(), _daysCount.toInt(), [], []),
+                            isEditing: false,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      final snackBar = SnackBar(
+                          shape: AppShapes.roundedRectangleShape,
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                          behavior: SnackBarBehavior.floating,
+                          content: const AppSnackBarContent(
+                            label: "Заполните все поля!",
+                            icon: Icons.select_all_rounded,
+                          ));
+
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(14.0),
