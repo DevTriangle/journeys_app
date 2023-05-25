@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:journeys_app/model/journey.dart';
 import 'package:journeys_app/view/colors.dart';
 import 'package:journeys_app/view/screens/actions_screen.dart';
+import 'package:journeys_app/view/screens/home_screen.dart';
 import 'package:journeys_app/view/widgets/app_card.dart';
 import 'package:journeys_app/view/widgets/app_dropdowm.dart';
 import 'package:journeys_app/view/widgets/app_text_field.dart';
@@ -117,7 +118,7 @@ class CreateJourneyScreenState extends State<CreateJourneyScreen> {
               children: [
                 IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (builder) => HomeScreen()));
                   },
                   icon: Icon(
                     Icons.arrow_back_rounded,

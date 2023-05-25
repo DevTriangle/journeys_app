@@ -254,20 +254,20 @@ class AppJourneyCard extends StatefulWidget {
 
 class AppJourneyCardState extends State<AppJourneyCard> {
   final List<JourneyItem> _items = [
-    JourneyItem("Плавание", "Плавки"),
-    JourneyItem("Плавание", "Сланцы"),
-    JourneyItem("Ужин в ресторане", "Деловаой костюм"),
-    JourneyItem("Бег", "Кроссовки"),
-    JourneyItem("Бег", "Футболка"),
-    JourneyItem("Бег", "Шорты"),
-    JourneyItem("Велотуризм", "Велосипед"),
-    JourneyItem("Пешеходный туризм", "Кроссовки"),
-    JourneyItem("Уход за детьми", "Коляска"),
-    JourneyItem("Уход за детьми", "Игрушки"),
-    JourneyItem("Пляж", "Плавки"),
-    JourneyItem("Пляж", "Сланцы"),
-    JourneyItem("Пляж", "Полотенце"),
-    JourneyItem("Пляж", "Солнечные очки"),
+    JourneyItem("Плавание", "Плавки", 0),
+    JourneyItem("Плавание", "Сланцы", -1),
+    JourneyItem("Ужин в ресторане", "Деловой костюм", 0),
+    JourneyItem("Бег", "Кроссовки", 0),
+    JourneyItem("Бег", "Футболка", 0),
+    JourneyItem("Бег", "Шорты", 0),
+    JourneyItem("Велотуризм", "Велосипед", -1),
+    JourneyItem("Пешеходный туризм", "Кроссовки", 0),
+    JourneyItem("Уход за детьми", "Коляска", -1),
+    JourneyItem("Уход за детьми", "Игрушки", 0),
+    JourneyItem("Пляж", "Плавки", 0),
+    JourneyItem("Пляж", "Сланцы", 0),
+    JourneyItem("Пляж", "Полотенце", 0),
+    JourneyItem("Пляж", "Солнечные очки", 0),
   ];
 
   List<JourneyItem> _selectedItems = [];
@@ -362,6 +362,7 @@ class AppJourneyCardState extends State<AppJourneyCard> {
                     Container(
                       child: ListView.builder(
                         shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         itemCount: widget.journey.actions.length,
                         itemBuilder: (b, index) {
                           return AppCompactToolCard(

@@ -112,6 +112,7 @@ class JourneyScreenState extends State<JourneyScreen> {
                         itemCount: snapshot.data!.length,
                         itemBuilder: ((context, index) {
                           return AppJourneyCard(
+                            margin: EdgeInsets.only(bottom: 4),
                             journey: snapshot.data![index],
                             onChanged: (list) async {
                               viewModel.journeys[index].items = list;
@@ -163,7 +164,6 @@ class JourneyScreenState extends State<JourneyScreen> {
                                                       color: Colors.black,
                                                       fontWeight: FontWeight.w500,
                                                       fontSize: 16,
-                                                      fontFamily: "Rubik",
                                                     ),
                                                     onChanged: (value) {
                                                       _actionValue = value!;
@@ -180,21 +180,24 @@ class JourneyScreenState extends State<JourneyScreen> {
                                                 ),
                                               ),
                                               AppTextField(
-                                                  hint: "",
-                                                  onChanged: (value) {
-                                                    _itemName = value;
-                                                  }),
+                                                hint: "",
+                                                onChanged: (value) {
+                                                  _itemName = value;
+                                                },
+                                              ),
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.end,
                                                 children: [
                                                   TextButton(
                                                     onPressed: () async {
-                                                      viewModel.journeys[index].items.add(JourneyItem(_actionValue, _itemName));
-                                                      await viewModel.saveJourneys();
+                                                      if (_itemName.trim().isNotEmpty) {
+                                                        viewModel.journeys[index].items.add(JourneyItem(_actionValue, _itemName, 0));
+                                                        await viewModel.saveJourneys();
 
-                                                      setState(() {});
+                                                        setState(() {});
 
-                                                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder) => HomeScreen()));
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder) => HomeScreen()));
+                                                      } else {}
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

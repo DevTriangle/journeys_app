@@ -154,7 +154,9 @@ class ActionsScreenState extends State<ActionsScreen> {
                             color: AppColors.secondaryColor,
                             child: InkWell(
                               onTap: () {
-                                _createAction();
+                                if (_actionName.trim().isNotEmpty) {
+                                  _createAction();
+                                } else {}
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(14.0),
