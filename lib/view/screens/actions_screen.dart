@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/app_action.dart';
 import '../colors.dart';
+import '../widgets/app_snackbar.dart';
 
 class ActionsScreen extends StatefulWidget {
   final Journey journey;
@@ -374,7 +375,21 @@ class ActionsScreenState extends State<ActionsScreen> {
                                 Navigator.push(context, MaterialPageRoute(builder: (builder) => HomeScreen()));
                               }
                             : () {
-                                _createJourney();
+                                if (_selectedActions.isNotEmpty) {
+                                  _createJourney();
+                                } else {
+                                  final snackBar = SnackBar(
+                                      shape: AppShapes.roundedRectangleShape,
+                                      margin: const EdgeInsets.all(10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                      behavior: SnackBarBehavior.floating,
+                                      content: const AppSnackBarContent(
+                                        label: "Выберите действия",
+                                        icon: Icons.select_all_rounded,
+                                      ));
+
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                }
                               },
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),

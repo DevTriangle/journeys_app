@@ -160,6 +160,7 @@ class JourneyScreenState extends State<JourneyScreen> {
                                                       return DropdownMenuItem<String>(value: item, child: Text(item));
                                                     }).toList(),
                                                     value: _actionValue,
+                                                    isExpanded: true,
                                                     style: TextStyle(
                                                       color: Colors.black,
                                                       fontWeight: FontWeight.w500,

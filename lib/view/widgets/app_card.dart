@@ -253,21 +253,49 @@ class AppJourneyCard extends StatefulWidget {
 }
 
 class AppJourneyCardState extends State<AppJourneyCard> {
-  final List<JourneyItem> _items = [
-    JourneyItem("Плавание", "Плавки", 0),
-    JourneyItem("Плавание", "Сланцы", -1),
-    JourneyItem("Ужин в ресторане", "Деловой костюм", 0),
-    JourneyItem("Бег", "Кроссовки", 0),
-    JourneyItem("Бег", "Футболка", 0),
-    JourneyItem("Бег", "Шорты", 0),
-    JourneyItem("Велотуризм", "Велосипед", -1),
-    JourneyItem("Пешеходный туризм", "Кроссовки", 0),
-    JourneyItem("Уход за детьми", "Коляска", -1),
-    JourneyItem("Уход за детьми", "Игрушки", 0),
-    JourneyItem("Пляж", "Плавки", 0),
-    JourneyItem("Пляж", "Сланцы", 0),
-    JourneyItem("Пляж", "Полотенце", 0),
-    JourneyItem("Пляж", "Солнечные очки", 0),
+  List<JourneyItem> _items = [
+    JourneyItem("Плавание", "Плавки", 1),
+    JourneyItem("Плавание", "Сланцы", 1),
+    JourneyItem("Плавание", "Полотенце", 1),
+    JourneyItem("Плавание", "Очки", 1),
+    JourneyItem("Плавание", "Шапочка", 1),
+    JourneyItem("Ужин в ресторане", "Деловой костюм", 1),
+    JourneyItem("Ужин в ресторане", "Наручные часы", 1),
+    JourneyItem("Бег", "Кроссовки", 1),
+    JourneyItem("Бег", "Футболка", 1),
+    JourneyItem("Бег", "Бутылка воды", 1),
+    JourneyItem("Бег", "Музыкальный плеер", 1),
+    JourneyItem("Бег", "Шорты", 1),
+    JourneyItem("Велотуризм", "Спортивная обувь", 1),
+    JourneyItem("Велотуризм", "Спортивная одежда", 1),
+    JourneyItem("Велотуризм", "Часы", 1),
+    JourneyItem("Велотуризм", "Смартфон", 1),
+    JourneyItem("Велотуризм", "Карта", 1),
+    JourneyItem("Велотуризм", "Компас", 1),
+    JourneyItem("Велотуризм", "GPS-навигатор", 1),
+    JourneyItem("Велотуризм", "Велосипед", 1),
+    JourneyItem("Велотуризм", "Музыкальный плеер", 1),
+    JourneyItem("Велотуризм", "Изолента", 1),
+    JourneyItem("Велотуризм", "Набор для ремонта шин", 1),
+    JourneyItem("Велотуризм", "Дождевик", 1),
+    JourneyItem("Пешеходный туризм", "Кроссовки", 1),
+    JourneyItem("Пешеходный туризм", "Сумка", 1),
+    JourneyItem("Пешеходный туризм", "Рюкзак", 1),
+    JourneyItem("Пешеходный туризм", "Карта", 1),
+    JourneyItem("Пешеходный туризм", "Компас", 1),
+    JourneyItem("Пешеходный туризм", "Смартфон", 1),
+    JourneyItem("Пешеходный туризм", "Музыкальный плеер", 1),
+    JourneyItem("Пешеходный туризм", "Дождевик", 1),
+    JourneyItem("Уход за детьми", "Коляска", 1),
+    JourneyItem("Уход за детьми", "Игрушки", 1),
+    JourneyItem("Уход за детьми", "Одежда", 1),
+    JourneyItem("Пляж", "Плавки", 1),
+    JourneyItem("Пляж", "Сланцы", 1),
+    JourneyItem("Пляж", "Полотенце", 1),
+    JourneyItem("Пляж", "Солнечные очки", 1),
+    JourneyItem("Пляж", "Солнцезащитный крем", 1),
+    JourneyItem("Официально-деловые Принадлежности", "Письменные принадлежности", 1),
+    JourneyItem("Официально-деловые Принадлежности", "Мобильный телефон", 1),
   ];
 
   List<JourneyItem> _selectedItems = [];
@@ -276,10 +304,57 @@ class AppJourneyCardState extends State<AppJourneyCard> {
   void initState() {
     super.initState();
 
+    _items = [
+      JourneyItem("Плавание", "Плавки", widget.journey.daysCount ~/ 5),
+      JourneyItem("Плавание", "Сланцы", 1),
+      JourneyItem("Плавание", "Полотенце", 1),
+      JourneyItem("Плавание", "Очки", 1),
+      JourneyItem("Плавание", "Шапочка", 1),
+      JourneyItem("Ужин в ресторане", "Деловой костюм", 1),
+      JourneyItem("Ужин в ресторане", "Наручные часы", 1),
+      JourneyItem("Бег", "Кроссовки", widget.journey.daysCount ~/ 5),
+      JourneyItem("Бег", "Футболка", widget.journey.daysCount * 1),
+      JourneyItem("Бег", "Бутылка воды", widget.journey.daysCount * 1),
+      JourneyItem("Бег", "Музыкальный плеер", 1),
+      JourneyItem("Бег", "Шорты", 1),
+      JourneyItem("Велотуризм", "Спортивная обувь", 1),
+      JourneyItem("Велотуризм", "Спортивная одежда", widget.journey.daysCount * 1),
+      JourneyItem("Велотуризм", "Часы", 1),
+      JourneyItem("Велотуризм", "Смартфон", 1),
+      JourneyItem("Велотуризм", "Карта", 1),
+      JourneyItem("Велотуризм", "Компас", 1),
+      JourneyItem("Велотуризм", "GPS-навигатор", 1),
+      JourneyItem("Велотуризм", "Велосипед", 1),
+      JourneyItem("Велотуризм", "Музыкальный плеер", 1),
+      JourneyItem("Велотуризм", "Изолента", 1),
+      JourneyItem("Велотуризм", "Набор для ремонта шин", widget.journey.daysCount * 1),
+      JourneyItem("Велотуризм", "Дождевик", 1),
+      JourneyItem("Пешеходный туризм", "Кроссовки", widget.journey.daysCount ~/ 5),
+      JourneyItem("Пешеходный туризм", "Сумка", 1),
+      JourneyItem("Пешеходный туризм", "Рюкзак", 1),
+      JourneyItem("Пешеходный туризм", "Карта", 1),
+      JourneyItem("Пешеходный туризм", "Компас", 1),
+      JourneyItem("Пешеходный туризм", "Смартфон", 1),
+      JourneyItem("Пешеходный туризм", "Музыкальный плеер", 1),
+      JourneyItem("Пешеходный туризм", "Дождевик", 1),
+      JourneyItem("Уход за детьми", "Коляска", 1),
+      JourneyItem("Уход за детьми", "Игрушки", 1),
+      JourneyItem("Уход за детьми", "Одежда", 1),
+      JourneyItem("Пляж", "Плавки", widget.journey.daysCount ~/ 5),
+      JourneyItem("Пляж", "Сланцы", widget.journey.daysCount ~/ 5),
+      JourneyItem("Пляж", "Полотенце", widget.journey.daysCount ~/ 5),
+      JourneyItem("Пляж", "Солнечные очки", 1),
+      JourneyItem("Пляж", "Солнцезащитный крем", widget.journey.daysCount * 1),
+      JourneyItem("Официально-деловые Принадлежности", "Письменные принадлежности", widget.journey.daysCount ~/ 5),
+      JourneyItem("Официально-деловые Принадлежности", "Мобильный телефон", 1),
+    ];
+
     _selectedItems.addAll(widget.journey.items);
 
     for (var i in widget.journey.items) {
-      _items.add(i);
+      if (!_items.any((element) => element.name == i.name && element.category == i.category)) {
+        _items.add(i);
+      }
     }
   }
 
@@ -367,13 +442,22 @@ class AppJourneyCardState extends State<AppJourneyCard> {
                         itemBuilder: (b, index) {
                           return AppCompactToolCard(
                             items: _items.where((element) => element.category == widget.journey.actions[index]).toList(),
-                            onItemAdd: (j) {
-                              _selectedItems.add(j);
+                            margin: EdgeInsets.only(bottom: 4),
+                            onItemAdd: (j, index) {
+                              if (index != null) {
+                                _selectedItems.insert(index, j);
+                              } else {
+                                _selectedItems.add(j);
+                              }
                               widget.onChanged(_selectedItems);
                             },
                             onItemRemove: (j) {
-                              _selectedItems.remove(j);
-                              widget.onChanged(_selectedItems);
+                              int i = _selectedItems.indexWhere((element) => element.category == j.category && element.name == j.name);
+
+                              if (i > -1) {
+                                _selectedItems.removeAt(i);
+                                widget.onChanged(_selectedItems);
+                              }
                             },
                             category: widget.journey.actions[index],
                             selectedItems: _selectedItems,
@@ -392,7 +476,7 @@ class AppJourneyCardState extends State<AppJourneyCard> {
 
 class AppCompactToolCard extends StatefulWidget {
   final String category;
-  final Function(JourneyItem) onItemAdd;
+  final Function(JourneyItem, int?) onItemAdd;
   final Function(JourneyItem) onItemRemove;
   final List<JourneyItem> items;
   final List<JourneyItem> selectedItems;
@@ -475,20 +559,55 @@ class AppCompactToolCardState extends State<AppCompactToolCard> {
                         itemCount: widget.items.length,
                         itemBuilder: (b, index) {
                           return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Checkbox(
-                                value: widget.selectedItems
-                                    .any((element) => element.category == widget.items[index].category && element.name == widget.items[index].name),
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    widget.onItemAdd(widget.items[index]);
-                                  } else {
-                                    widget.onItemRemove(widget.items[index]);
-                                  }
-                                  setState(() {});
-                                },
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: widget.selectedItems
+                                        .any((element) => element.category == widget.items[index].category && element.name == widget.items[index].name),
+                                    onChanged: (value) {
+                                      if (value == true) {
+                                        widget.onItemAdd(widget.items[index], null);
+                                      } else {
+                                        widget.onItemRemove(widget.items[index]);
+                                      }
+                                      setState(() {});
+                                    },
+                                  ),
+                                  Text(widget.items[index].name),
+                                ],
                               ),
-                              Text(widget.items[index].name),
+                              widget.selectedItems
+                                      .any((element) => element.category == widget.items[index].category && element.name == widget.items[index].name)
+                                  ? Builder(
+                                      builder: (context) {
+                                        int i = widget.selectedItems.indexWhere(
+                                            (element) => element.category == widget.items[index].category && element.name == widget.items[index].name);
+                                        return CountButtons(
+                                          count: widget.selectedItems[i].count,
+                                          onAddTap: () {
+                                            int count = widget.selectedItems[i].count;
+                                            widget.onItemRemove(widget.items[index]);
+                                            widget.onItemAdd(JourneyItem(widget.items[index].category, widget.items[index].name, count + 1), i);
+
+                                            setState(() {});
+                                          },
+                                          onMinusTap: () {
+                                            int count = widget.selectedItems[i].count;
+                                            if (count > 0) {
+                                              widget.onItemRemove(widget.items[index]);
+                                              widget.onItemAdd(JourneyItem(widget.items[index].category, widget.items[index].name, count - 1), i);
+                                            }
+
+                                            setState(() {});
+                                          },
+                                          enabled: widget.selectedItems
+                                              .any((element) => element.category == widget.items[index].category && element.name == widget.items[index].name),
+                                        );
+                                      },
+                                    )
+                                  : SizedBox()
                             ],
                           );
                         },
@@ -499,6 +618,35 @@ class AppCompactToolCardState extends State<AppCompactToolCard> {
               )
             : const SizedBox(),
       ],
+    );
+  }
+}
+
+class CountButtons extends StatelessWidget {
+  final int count;
+  final Function() onAddTap;
+  final Function() onMinusTap;
+  final bool enabled;
+
+  const CountButtons({super.key, required this.count, required this.onAddTap, required this.onMinusTap, required this.enabled});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      color: Colors.transparent,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          IconButton(onPressed: enabled ? onMinusTap : null, icon: Icon(Icons.remove_rounded)),
+          const SizedBox(width: 2),
+          Text(count.toString()),
+          const SizedBox(width: 2),
+          IconButton(onPressed: enabled ? onAddTap : null, icon: Icon(Icons.add_rounded)),
+        ],
+      ),
     );
   }
 }
