@@ -10,6 +10,9 @@ import 'package:journeys_app/viewmodel/home_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../shapes.dart';
+import '../widgets/app_snackbar.dart';
+
 class ToolsScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => ToolsScreenState();
@@ -283,6 +286,18 @@ class ToolsScreenState extends State<ToolsScreen> {
                       });
                     },
                   );
+                } else {
+                  final snackBar = SnackBar(
+                      shape: AppShapes.roundedRectangleShape,
+                      margin: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      behavior: SnackBarBehavior.floating,
+                      content: const AppSnackBarContent(
+                        label: "Конвертер загружается...",
+                        icon: Icons.sync_rounded,
+                      ));
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 }
               },
             ),
@@ -312,87 +327,91 @@ class ToolsScreenState extends State<ToolsScreen> {
                         }
 
                         _currencyEnabled = true;
-                      }
 
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: viewModel.weatherList.length,
-                          itemBuilder: (itemBuilder, index) {
-                            return AppWeatherCard(
-                              item: viewModel.weatherList[index],
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (builder) {
-                                    return Dialog(
-                                      backgroundColor: AppColors.backgroundColor,
-                                      child: Wrap(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  child: Text(
-                                                    "Удалить выбранный город из списка?",
-                                                    style: TextStyle(color: AppColors.hintColor, fontSize: 14),
+                        return Expanded(
+                          child: ListView.builder(
+                            itemCount: viewModel.weatherList.length,
+                            itemBuilder: (itemBuilder, index) {
+                              return AppWeatherCard(
+                                item: viewModel.weatherList[index],
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (builder) {
+                                      return Dialog(
+                                        backgroundColor: AppColors.backgroundColor,
+                                        child: Wrap(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      "Удалить выбранный город из списка?",
+                                                      style: TextStyle(color: AppColors.hintColor, fontSize: 14),
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 16,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () async {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                        child: Text("Отменить"),
+                                                  SizedBox(
+                                                    height: 16,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                          child: Text("Отменить"),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () async {
-                                                        SharedPreferences shared = await SharedPreferences.getInstance();
+                                                      TextButton(
+                                                        onPressed: () async {
+                                                          SharedPreferences shared = await SharedPreferences.getInstance();
 
-                                                        List<String> wList = [];
+                                                          List<String> wList = [];
 
-                                                        if (shared.getString("weatherList") != null) {
-                                                          wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
-                                                        }
+                                                          if (shared.getString("weatherList") != null) {
+                                                            wList.addAll(List<String>.from(jsonDecode(shared.getString("weatherList")!)));
+                                                          }
 
-                                                        wList.remove(viewModel.weatherList[index].name);
+                                                          wList.remove(viewModel.weatherList[index].name);
 
-                                                        await shared.setString("weatherList", jsonEncode(wList));
+                                                          await shared.setString("weatherList", jsonEncode(wList));
 
-                                                        _weatherFuture = viewModel.getWeatherList();
+                                                          _weatherFuture = viewModel.getWeatherList();
 
-                                                        setState(() {});
+                                                          setState(() {});
 
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                        child: Text("Удалить"),
+                                                          Navigator.pop(context);
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                          child: Text("Удалить"),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      );
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                     })
                 : const SizedBox(),
           ],
