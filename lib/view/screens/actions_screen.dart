@@ -29,8 +29,8 @@ class ActionsScreenState extends State<ActionsScreen> {
 
   final List<AppAction> _actions = [
     AppAction("Плавание", Icons.pool_rounded),
-    AppAction("Повседневно-деловые Принадлежности", Icons.cases_rounded),
-    AppAction("Официально-деловые Принадлежности", Icons.business_center_rounded),
+    AppAction("Повседневно-деловые принадлежности", Icons.cases_rounded),
+    AppAction("Официально-деловые принадлежности", Icons.business_center_rounded),
     AppAction("Ужин в ресторане", Icons.dinner_dining_rounded),
     AppAction("Бег", Icons.run_circle_outlined),
     AppAction("Велотуризм", Icons.pedal_bike_rounded),
