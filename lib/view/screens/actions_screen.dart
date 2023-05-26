@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/app_action.dart';
 import '../colors.dart';
+import '../widgets/app_snackbar.dart';
 
 class ActionsScreen extends StatefulWidget {
   final Journey journey;
@@ -28,8 +29,8 @@ class ActionsScreenState extends State<ActionsScreen> {
 
   final List<AppAction> _actions = [
     AppAction("Плавание", Icons.pool_rounded),
-    AppAction("Повседневно-деловые Принадлежности", Icons.cases_rounded),
-    AppAction("Официально-деловые Принадлежности", Icons.business_center_rounded),
+    AppAction("Повседневно-деловые принадлежности", Icons.cases_rounded),
+    AppAction("Официально-деловые принадлежности", Icons.business_center_rounded),
     AppAction("Ужин в ресторане", Icons.dinner_dining_rounded),
     AppAction("Бег", Icons.run_circle_outlined),
     AppAction("Велотуризм", Icons.pedal_bike_rounded),
@@ -154,7 +155,9 @@ class ActionsScreenState extends State<ActionsScreen> {
                             color: AppColors.secondaryColor,
                             child: InkWell(
                               onTap: () {
-                                _createAction();
+                                if (_actionName.trim().isNotEmpty) {
+                                  _createAction();
+                                } else {}
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(14.0),
@@ -372,7 +375,21 @@ class ActionsScreenState extends State<ActionsScreen> {
                                 Navigator.push(context, MaterialPageRoute(builder: (builder) => HomeScreen()));
                               }
                             : () {
-                                _createJourney();
+                                if (_selectedActions.isNotEmpty) {
+                                  _createJourney();
+                                } else {
+                                  final snackBar = SnackBar(
+                                      shape: AppShapes.roundedRectangleShape,
+                                      margin: const EdgeInsets.all(10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                      behavior: SnackBarBehavior.floating,
+                                      content: const AppSnackBarContent(
+                                        label: "Выберите действия",
+                                        icon: Icons.select_all_rounded,
+                                      ));
+
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                }
                               },
                         child: Padding(
                           padding: const EdgeInsets.all(14.0),
